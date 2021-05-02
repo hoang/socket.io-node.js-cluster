@@ -1,0 +1,40 @@
+<html>
+    <head></head>
+    <body>
+        <h1>Socket IO Client!</h1>
+        <input id="sendTo" type="text" />
+        <button onclick="send();">Send</button>
+        <button onclick="query_online_users();">query online users</button>
+        <script src="https://cdn.socket.io/4.0.1/socket.io.min.js" integrity="sha384-LzhRnpGmQP+lOvWruF/lgkcqD+WDVt9fU3H4BWmwP5u5LTmkUGafMcpZKNObVMLU" crossorigin="anonymous"></script>
+        <script>
+            const token = "ewoJInR5cGUiOiAiSldUIiwKCSJhbGciOiAiUlMyNTYiCn0.ewogICJhY2NpZCI6ICJnaWFuZ250aCIsCiAgImlhdCI6IDE2MTk5NzI0NTIsCiAgImV4cCI6IDE2MTk5NzYwNTIKfQ.blO2JxfhK83X3YKO4jL8u_ASSQfmRt5bcU0TMUw6l0Oc6QlzekYZxao6_JPNYF9LIZ-DBrCnagXjZCsv90MadTL90Uh83QQLTSW3OcNQoVtwZGtvRB9tj2acGZd1T-BrgEjb2trv7gSYOYhIUbH1ziJTsNrDtSPiLqImbnUcS3e9PnnhjYN64qz1Wa-9i1Up3lgv7ZHQ7enu29VbUJy6BhCB_1uj2Zqe38AWrqUslnJE8MKUsF51UzPmOsBCe8OUsRV3UF3INXHLlXYuQtRSMlBWQVwwFa6v2OAIUkli9N0vkoV6S0fSMPQgLOpjLVDZ3x3gR3NPtWAODKN_sCgAEA";
+            const socket = io("http://localhost:3000?token="+token, {
+                transports: [ "websocket" ]
+            });
+            socket.on("connect", () => {
+                console.log("socket.id", socket.id); // "G5p5..."
+            });
+            socket.on("disconnect", () => {
+                console.log("socket disconnected.");
+            });
+            socket.on("connect_error", (error) => {
+                console.log('connect error', error);
+            });
+            socket.on("chat", function(data) {
+                console.log("this client received chat event", data);
+            });
+            socket.on("online_users", function(data) {
+                console.log("online_users", data);
+            })
+            function send() {
+                var sendTo = document.getElementById('sendTo').value;
+                socket.emit("chat", {
+                    sendTo
+                })
+            }
+            function query_online_users() {
+                socket.emit("query_online_users");
+            }
+        </script>
+    </body>
+</html>
